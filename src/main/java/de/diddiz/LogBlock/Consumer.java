@@ -559,7 +559,7 @@ public class Consumer extends TimerTask {
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
         if (queue.isEmpty() || !lock.tryLock()) {
             return;
         }
