@@ -79,6 +79,7 @@ public final class QueryParams implements Cloneable {
     public World world = null;
     public String match = null;
     public boolean needCount = false, needId = false, needDate = false, needType = false, needData = false, needPlayerId = false, needPlayer = false, needCoords = false, needChestAccess = false, needMessage = false, needKiller = false, needVictim = false, needWeapon = false;
+    public boolean useSeconds = false;
     private final LogBlock logblock;
 
     public QueryParams(LogBlock logblock) {
@@ -623,11 +624,21 @@ public final class QueryParams implements Cloneable {
                 }
             }
         }
-        if (since > 0) {
-            where.append("date > date_sub(now(), INTERVAL ").append(since).append(" MINUTE) AND ");
-        }
-        if (before > 0) {
-            where.append("date < date_sub(now(), INTERVAL ").append(before).append(" MINUTE) AND ");
+        if (!useSeconds) {
+            if (since > 0) {
+                where.append("date > date_sub(now(), INTERVAL ").append(since).append(" MINUTE) AND ");
+            }
+            if (before > 0) {
+                where.append("date < date_sub(now(), INTERVAL ").append(before).append(" MINUTE) AND ");
+            }
+        } else {
+            System.out.println("using seconds");
+            if (since > 0) {
+                where.append("date > date_sub(now(), INTERVAL ").append(since).append(" SECOND) AND ");
+            }
+            if (before > 0) {
+                where.append("date < date_sub(now(), INTERVAL ").append(before).append(" SECOND) AND ");
+            }
         }
         if (where.length() > 6) {
             where.delete(where.length() - 4, where.length());
